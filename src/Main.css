@@ -1,0 +1,26 @@
+.tasker {
+    text-align: center;
+}
+
+.tasker__timer-wrapper {
+    display: table;
+    width: 250px;
+    height: 250px;
+    margin: 25px auto;
+    background-color: #e0e0e0;
+    color: #3249c7;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.tasker__timer-value {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.tasker__timer-hours,
+.tasker__timer-minutes,
+.tasker__timer-seconds {
+    font-size: 30px;
+}
