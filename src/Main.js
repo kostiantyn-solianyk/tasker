@@ -44,12 +44,15 @@ class Main extends Component {
   };
 
   startTimer = () => {
-    this.setState(prevState => ({
-      btnValue: !prevState.btnValue
-    }));
+    if (this.state.timeSec === 0 || this.state.textFieldValue.length > 0) {
+      this.setState(prevState => ({
+        btnValue: !prevState.btnValue,
+        timeSec: 0
+      }));
+    } else {
+      alert("you need to enter your task");
+    }
   };
-
-
 
   handleTextFieldChange = ({target: {value}}) => {
     this.setState({
