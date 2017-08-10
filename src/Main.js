@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TextField from 'material-ui/TextField';
-import injectTapEventPlugin from "react-tap-event-plugin"
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import injectTapEventPlugin from "react-tap-event-plugin";
 import Timer from './Timer';
-import TableData from './Table'
+import TableData from './Table';
 import './Main.css';
 injectTapEventPlugin();
 
@@ -23,7 +25,11 @@ class Main extends Component {
     this.state = {
       btnValue: false,
       textFieldValue: '',
-      timeSec: 0
+      openModal: false,
+      timeSec: 0,
+      tasks: [
+        { id:1, name: "title", timeStart: 10, timeEnd: 10, timeSpend: 10 }
+      ]
     };
   }
 
@@ -50,7 +56,7 @@ class Main extends Component {
         timeSec: 0
       }));
     } else {
-      alert("you need to enter your task");
+      this.handleModalOpen();
     }
   };
 
@@ -60,8 +66,23 @@ class Main extends Component {
     });
   };
 
+  handleModalOpen = () => {
+    this.setState({openModal: true});
+  };
+
+  handleModalClose = () => {
+    this.setState({openModal: false});
+    this.refs.textField.focus();
+  };
+
   render() {
-    const {timeSec} = this.state;
+    const {timeSec, tasks} = this.state;
+    const actions = [
+      <FlatButton
+        label="CLOSE"
+        primary={true}
+        onTouchTap={this.handleModalClose}/>
+    ];
 
     return (
       <div className="tasker">
@@ -71,13 +92,25 @@ class Main extends Component {
             floatingLabelText="Name of your task"
             className="tasker__text-field"
             value={this.state.textFieldValue}
-            onChange={this.handleTextFieldChange}/>
+            onChange={this.handleTextFieldChange}
+            ref="textField"/>
+        </MuiThemeProvider>
+
+        <MuiThemeProvider muiTheme={muiTheme}>
+          <Dialog
+            title="Empty task name"
+            titleStyle={{color: "#bf2a5c"}}
+            actions={actions}
+            modal={true}
+            open={this.state.openModal}>
+            You are trying close your task without name, enter the title and try again!
+          </Dialog>
         </MuiThemeProvider>
 
         <Timer timeSec={timeSec} startTimer={this.startTimer}
                btnValue={this.state.btnValue ? 'stop' : 'start'}/>
 
-        <TableData />
+        <TableData tasks={tasks}/>
       </div>
     );
   }

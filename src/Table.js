@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -30,6 +30,7 @@ const btnMargin = {
 export default class TableData extends Component {
 
   render() {
+    console.log(this.props.tasks);
     return (
       <div className="tasker__table-wrapper">
         <MuiThemeProvider muiTheme={muiTheme}>
@@ -45,16 +46,18 @@ export default class TableData extends Component {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              <TableRow selected={false}>
-                <TableRowColumn>1</TableRowColumn>
-                <TableRowColumn>to do list</TableRowColumn>
-                <TableRowColumn>22 22 22</TableRowColumn>
-                <TableRowColumn>33 33 33</TableRowColumn>
-                <TableRowColumn>2h 10m</TableRowColumn>
-                <TableRowColumn>
-                  <RaisedButton label="Delete" style={btnMargin}/>
-                </TableRowColumn>
-              </TableRow>
+              {this.props.tasks.map((task, idx) =>
+                  <TableRow selected={false} key={idx}>
+                    <TableRowColumn>{task.id}</TableRowColumn>
+                    <TableRowColumn>{task.name}</TableRowColumn>
+                    <TableRowColumn>{task.timeStart}</TableRowColumn>
+                    <TableRowColumn>{task.timeEnd}</TableRowColumn>
+                    <TableRowColumn>{task.timeSpend}</TableRowColumn>
+                    <TableRowColumn>
+                      <RaisedButton label="Delete" style={btnMargin}/>
+                    </TableRowColumn>
+                  </TableRow>
+              )}
             </TableBody>
           </Table>
         </MuiThemeProvider>
@@ -62,3 +65,7 @@ export default class TableData extends Component {
     )
   }
 }
+
+TableData.propTypes = {
+  tasks: PropTypes.array
+};
