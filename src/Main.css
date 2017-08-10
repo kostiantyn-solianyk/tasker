@@ -14,13 +14,24 @@
     border-radius: 50%;
 }
 
-.tasker__timer-value {
+.tasker__time-value {
     display: table-cell;
     vertical-align: middle;
+    color: #3249c7;
 }
 
 .tasker__timer-hours,
 .tasker__timer-minutes,
 .tasker__timer-seconds {
     font-size: 30px;
+}
+
+.tasker__text-field label{
+    width: 100%;
+}
+
+.tasker__table-wrapper {
+    width: 75%;
+    margin: 25px auto;
+    text-align: center;
 }
