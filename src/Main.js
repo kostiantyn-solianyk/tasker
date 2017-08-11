@@ -11,6 +11,11 @@ import './Main.css';
 injectTapEventPlugin();
 
 const TextColor = '#3249c7';
+const classes = {
+  main: "tasker",
+  textField: "tasker__text-field",
+  btnStart: "tasker__timer-button"
+};
 const muiTheme = getMuiTheme({
   textField: {
     textColor: TextColor,
@@ -24,46 +29,27 @@ class Main extends Component {
     super(props);
     this.state = {
       btnValue: false,
+      timeSec: 0,
       textFieldValue: '',
       openModal: false,
-      timeSec: 0,
-      tasks: [
-        { id:1, name: "title", timeStart: 10, timeEnd: 10, timeSpend: 10 }
-      ]
+      tasks: []
     };
-  }
+  };
 
   componentWillUpdate = () => {
     clearInterval(this.timer);
   };
 
   componentDidUpdate = () => {
-    const currentTimer = this.state.timeSec;
+    const currentTimer = new Date();
 
     if (this.state.btnValue) {
       this.timer = setInterval(() => {
         this.setState({
-          timeSec: currentTimer + 1
+          timeSec: +((currentTimer - this.currentTimeStart) / 1000).toFixed(0)
         });
       }, 1000);
     }
-  };
-
-  startTimer = () => {
-    if (this.state.timeSec === 0 || this.state.textFieldValue.length > 0) {
-      this.setState(prevState => ({
-        btnValue: !prevState.btnValue,
-        timeSec: 0
-      }));
-    } else {
-      this.handleModalOpen();
-    }
-  };
-
-  handleTextFieldChange = ({target: {value}}) => {
-    this.setState({
-      textFieldValue: value
-    });
   };
 
   handleModalOpen = () => {
@@ -75,8 +61,74 @@ class Main extends Component {
     this.refs.textField.focus();
   };
 
+  handleTextFieldChange = ({target: {value}}) => {
+    this.setState({
+      textFieldValue: value
+    });
+  };
+
+  removeItem = (removableTask) => {
+    const {tasks} = this.state;
+    const filteredTasks = tasks.filter(task => {
+      if (removableTask !== task) {
+        return [...tasks];
+      }
+    });
+
+    this.setState({
+      tasks: filteredTasks
+    });
+  };
+
+  startTimer = () => {
+    this.currentTimeStart = new Date();
+
+    if (this.state.timeSec === 0 || this.state.textFieldValue.length > 0) {
+      this.setState(prevState => ({
+        btnValue: !prevState.btnValue
+      }));
+    }
+  };
+
+  endTimer = () => {
+    if (this.state.textFieldValue.length > 0) {
+      const currentTextOfTask = this.state.textFieldValue;
+      const currentTimeStart = this.currentTimeStart;
+      const timeStartInSec = currentTimeStart.getHours() * 3600 + currentTimeStart.getMinutes() * 60 + currentTimeStart.getSeconds();
+      const currentTimeEnd = new Date();
+      const timeEndInSec = currentTimeEnd.getHours() * 3600 + currentTimeEnd.getMinutes() * 60 + currentTimeEnd.getSeconds();
+
+      this.setState(prevState => ({
+        btnValue: !prevState.btnValue,
+        timeSec: 0,
+        textFieldValue: "",
+        tasks: [
+          ...this.state.tasks,
+          {
+            name: currentTextOfTask,
+            timeStart: this.formatTime(timeStartInSec),
+            timeEnd: this.formatTime(timeEndInSec),
+            timeSpend: this.formatTime(this.state.timeSec)
+          }
+        ]
+      }));
+      localStorage.setItem("dataJS", JSON.stringify(this.state.tasks));
+    } else {
+      this.handleModalOpen();
+    }
+  };
+
+  formatTime = (whatToChange) => {
+    const sec = whatToChange;
+    const h = sec / 3600 ^ 0;
+    const m = (sec - h * 3600) / 60 ^ 0;
+    const s = sec - h * 3600 - m * 60;
+    return ( h < 10 ? "0" + h : h ) + ':' + ( m < 10 ? "0" + m : m ) + ':' + ( s < 10 ? "0" + s : s );
+  };
+
   render() {
-    const {timeSec, tasks} = this.state;
+    const {tasks, textFieldValue, openModal, btnValue} = this.state;
+    const timeSec = this.formatTime(this.state.timeSec);
     const actions = [
       <FlatButton
         label="CLOSE"
@@ -85,13 +137,13 @@ class Main extends Component {
     ];
 
     return (
-      <div className="tasker">
+      <div className={classes.main}>
         <MuiThemeProvider muiTheme={muiTheme}>
           <TextField
             hintText="Start typing..."
             floatingLabelText="Name of your task"
-            className="tasker__text-field"
-            value={this.state.textFieldValue}
+            className={classes.textField}
+            value={textFieldValue}
             onChange={this.handleTextFieldChange}
             ref="textField"/>
         </MuiThemeProvider>
@@ -102,15 +154,17 @@ class Main extends Component {
             titleStyle={{color: "#bf2a5c"}}
             actions={actions}
             modal={true}
-            open={this.state.openModal}>
+            open={openModal}>
             You are trying close your task without name, enter the title and try again!
           </Dialog>
         </MuiThemeProvider>
 
-        <Timer timeSec={timeSec} startTimer={this.startTimer}
-               btnValue={this.state.btnValue ? 'stop' : 'start'}/>
+        <Timer timeSec={timeSec}
+               startTimer={this.startTimer}
+               endTimer={this.endTimer}
+               btnValue={btnValue ? 'stop' : 'start'}/>
 
-        <TableData tasks={tasks}/>
+        <TableData tasks={tasks} removeItem={this.removeItem}/>
       </div>
     );
   }

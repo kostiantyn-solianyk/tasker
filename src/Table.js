@@ -12,27 +12,28 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-const TextColor = '#3249c7';
+const textColor = '#3249c7';
+const classes = {
+  tableWrapper: "tasker__table-wrapper",
+  btnMargin: "tasker__table-btn"
+};
 const muiTheme = getMuiTheme({
   tableRow: {
-    textColor: TextColor
+    textColor: textColor
   },
   raisedButton: {
-    textColor: TextColor,
+    textColor: textColor,
     fontSize: 10
   }
 });
-const btnMargin = {
-  marginTop: 18,
-  marginBottom: 18
-};
 
 export default class TableData extends Component {
 
   render() {
-    console.log(this.props.tasks);
+    const {removeItem, tasks} = this.props;
+
     return (
-      <div className="tasker__table-wrapper">
+      <div className={classes.tableWrapper}>
         <MuiThemeProvider muiTheme={muiTheme}>
           <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -46,17 +47,17 @@ export default class TableData extends Component {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {this.props.tasks.map((task, idx) =>
-                  <TableRow selected={false} key={idx}>
-                    <TableRowColumn>{task.id}</TableRowColumn>
-                    <TableRowColumn>{task.name}</TableRowColumn>
-                    <TableRowColumn>{task.timeStart}</TableRowColumn>
-                    <TableRowColumn>{task.timeEnd}</TableRowColumn>
-                    <TableRowColumn>{task.timeSpend}</TableRowColumn>
-                    <TableRowColumn>
-                      <RaisedButton label="Delete" style={btnMargin}/>
-                    </TableRowColumn>
-                  </TableRow>
+              {tasks.map((task, idx) =>
+                <TableRow selected={false} key={idx}>
+                  <TableRowColumn>{idx + 1}</TableRowColumn>
+                  <TableRowColumn>{task.name}</TableRowColumn>
+                  <TableRowColumn>{task.timeStart}</TableRowColumn>
+                  <TableRowColumn>{task.timeEnd}</TableRowColumn>
+                  <TableRowColumn>{task.timeSpend}</TableRowColumn>
+                  <TableRowColumn>
+                    <RaisedButton label="Delete" className={classes.btnMargin} onClick={() => {removeItem(task)}}/>
+                  </TableRowColumn>
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -67,5 +68,6 @@ export default class TableData extends Component {
 }
 
 TableData.propTypes = {
-  tasks: PropTypes.array
+  tasks: PropTypes.array,
+  removeItem: PropTypes.func
 };
