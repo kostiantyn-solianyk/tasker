@@ -32,16 +32,18 @@ class Main extends Component {
       timeSec: 0,
       textFieldValue: '',
       openModal: false,
-      tasks: []
+      tasks: JSON.parse(localStorage.getItem("tasks")) || []
     };
-  };
+  }
 
   componentWillUpdate = () => {
     clearInterval(this.timer);
+    console.log("componentWillUpdate");
   };
 
   componentDidUpdate = () => {
     const currentTimer = new Date();
+    console.log("componentDidUpdate");
 
     if (this.state.btnValue) {
       this.timer = setInterval(() => {
@@ -49,6 +51,18 @@ class Main extends Component {
           timeSec: +((currentTimer - this.currentTimeStart) / 1000).toFixed(0)
         });
       }, 1000);
+    }
+  };
+
+  componentWillMount = () => {
+    console.log("componentWillMount");
+    if (Date.parse(localStorage.timeStart)) {
+      const currentTimer = new Date();
+      this.setState({
+        timeSec: +((currentTimer - Date.parse(localStorage.timeStart)) / 1000).toFixed(0)
+      });
+      this.startTimer();
+      this.forceUpdate();
     }
   };
 
@@ -81,9 +95,12 @@ class Main extends Component {
   };
 
   startTimer = () => {
-    this.currentTimeStart = new Date();
+    console.log("startTimer");
+    this.currentTimeStart = new Date(localStorage.getItem("timeStart") || new Date())
+    localStorage.setItem("timeStart", this.currentTimeStart);
 
     if (this.state.timeSec === 0 || this.state.textFieldValue.length > 0) {
+      console.log("how bitch");
       this.setState(prevState => ({
         btnValue: !prevState.btnValue
       }));
@@ -112,7 +129,7 @@ class Main extends Component {
           }
         ]
       }));
-      localStorage.setItem("dataJS", JSON.stringify(this.state.tasks));
+      localStorage.removeItem("timeStart");
     } else {
       this.handleModalOpen();
     }

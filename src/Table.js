@@ -29,6 +29,10 @@ const muiTheme = getMuiTheme({
 
 export default class TableData extends Component {
 
+  componentWillReceiveProps = (nextProps) => {
+    localStorage.setItem("tasks", JSON.stringify(nextProps.tasks));
+  };
+
   render() {
     const {removeItem, tasks} = this.props;
 
@@ -48,16 +52,16 @@ export default class TableData extends Component {
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               {tasks.map((task, idx) =>
-                <TableRow selected={false} key={idx}>
-                  <TableRowColumn>{idx + 1}</TableRowColumn>
-                  <TableRowColumn>{task.name}</TableRowColumn>
-                  <TableRowColumn>{task.timeStart}</TableRowColumn>
-                  <TableRowColumn>{task.timeEnd}</TableRowColumn>
-                  <TableRowColumn>{task.timeSpend}</TableRowColumn>
-                  <TableRowColumn>
-                    <RaisedButton label="Delete" className={classes.btnMargin} onClick={() => {removeItem(task)}}/>
-                  </TableRowColumn>
-                </TableRow>
+                  <TableRow selected={false} key={idx}>
+                    <TableRowColumn>{idx + 1}</TableRowColumn>
+                    <TableRowColumn>{task.name}</TableRowColumn>
+                    <TableRowColumn>{task.timeStart}</TableRowColumn>
+                    <TableRowColumn>{task.timeEnd}</TableRowColumn>
+                    <TableRowColumn>{task.timeSpend}</TableRowColumn>
+                    <TableRowColumn>
+                      <RaisedButton label="Delete" className={classes.btnMargin} onClick={() => {removeItem(task)}}/>
+                    </TableRowColumn>
+                  </TableRow>
               )}
             </TableBody>
           </Table>
