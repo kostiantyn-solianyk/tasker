@@ -51,15 +51,15 @@ class Main extends Component {
     });
   };
 
-  componentWillUpdate = () => {
-    clearInterval(this.timer);
-  };
+  // componentWillUpdate = () => {
+  //   clearInterval(this.timer);
+  // };
 
   componentDidUpdate = () => {
     if (this.state.btnValue) {
       const currentTime = new Date();
 
-      this.timer = setInterval(() => {
+      setTimeout(() => {
         this.setState({
           timeSec: +((currentTime - this.currentTimeStart) / 1000).toFixed(0)
         });
@@ -68,10 +68,12 @@ class Main extends Component {
   };
 
   componentWillMount = () => {
-    if (Date.parse(localStorage.timeStart)) {
+    const timeStartFromStorage = Date.parse(localStorage.timeStart);
+
+    if (timeStartFromStorage) {
       const currentTimer = new Date();
       this.setState({
-        timeSec: +((currentTimer - Date.parse(localStorage.timeStart)) / 1000).toFixed(0)
+        timeSec: +((currentTimer - timeStartFromStorage) / 1000).toFixed(0)
       });
       this.startTimer();
       this.forceUpdate();
