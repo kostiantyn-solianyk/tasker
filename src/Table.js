@@ -52,7 +52,7 @@ export default class TableData extends Component {
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               {tasks.map((task, idx) =>
-                  <TableRow selected={false} key={idx}>
+                  <TableRow key={idx}>
                     <TableRowColumn>{idx + 1}</TableRowColumn>
                     <TableRowColumn>{task.name}</TableRowColumn>
                     <TableRowColumn>{task.timeStart}</TableRowColumn>

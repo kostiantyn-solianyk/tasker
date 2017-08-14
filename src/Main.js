@@ -36,36 +36,6 @@ class Main extends Component {
     };
   }
 
-  componentWillUpdate = () => {
-    clearInterval(this.timer);
-    console.log("componentWillUpdate");
-  };
-
-  componentDidUpdate = () => {
-    const currentTimer = new Date();
-    console.log("componentDidUpdate");
-
-    if (this.state.btnValue) {
-      this.timer = setInterval(() => {
-        this.setState({
-          timeSec: +((currentTimer - this.currentTimeStart) / 1000).toFixed(0)
-        });
-      }, 1000);
-    }
-  };
-
-  componentWillMount = () => {
-    console.log("componentWillMount");
-    if (Date.parse(localStorage.timeStart)) {
-      const currentTimer = new Date();
-      this.setState({
-        timeSec: +((currentTimer - Date.parse(localStorage.timeStart)) / 1000).toFixed(0)
-      });
-      this.startTimer();
-      this.forceUpdate();
-    }
-  };
-
   handleModalOpen = () => {
     this.setState({openModal: true});
   };
@@ -79,6 +49,33 @@ class Main extends Component {
     this.setState({
       textFieldValue: value
     });
+  };
+
+  componentWillUpdate = () => {
+    clearInterval(this.timer);
+  };
+
+  componentDidUpdate = () => {
+    if (this.state.btnValue) {
+      const currentTime = new Date();
+
+      this.timer = setInterval(() => {
+        this.setState({
+          timeSec: +((currentTime - this.currentTimeStart) / 1000).toFixed(0)
+        });
+      }, 1000);
+    }
+  };
+
+  componentWillMount = () => {
+    if (Date.parse(localStorage.timeStart)) {
+      const currentTimer = new Date();
+      this.setState({
+        timeSec: +((currentTimer - Date.parse(localStorage.timeStart)) / 1000).toFixed(0)
+      });
+      this.startTimer();
+      this.forceUpdate();
+    }
   };
 
   removeItem = (removableTask) => {
@@ -95,12 +92,10 @@ class Main extends Component {
   };
 
   startTimer = () => {
-    console.log("startTimer");
-    this.currentTimeStart = new Date(localStorage.getItem("timeStart") || new Date())
+    this.currentTimeStart = new Date(localStorage.getItem("timeStart") || new Date());
     localStorage.setItem("timeStart", this.currentTimeStart);
 
     if (this.state.timeSec === 0 || this.state.textFieldValue.length > 0) {
-      console.log("how bitch");
       this.setState(prevState => ({
         btnValue: !prevState.btnValue
       }));
@@ -109,11 +104,8 @@ class Main extends Component {
 
   endTimer = () => {
     if (this.state.textFieldValue.length > 0) {
-      const currentTextOfTask = this.state.textFieldValue;
-      const currentTimeStart = this.currentTimeStart;
-      const timeStartInSec = currentTimeStart.getHours() * 3600 + currentTimeStart.getMinutes() * 60 + currentTimeStart.getSeconds();
-      const currentTimeEnd = new Date();
-      const timeEndInSec = currentTimeEnd.getHours() * 3600 + currentTimeEnd.getMinutes() * 60 + currentTimeEnd.getSeconds();
+      const timeStartInSec = this.formatTimeToSec(this.currentTimeStart);
+      const timeEndInSec = this.formatTimeToSec(new Date());
 
       this.setState(prevState => ({
         btnValue: !prevState.btnValue,
@@ -122,10 +114,10 @@ class Main extends Component {
         tasks: [
           ...this.state.tasks,
           {
-            name: currentTextOfTask,
-            timeStart: this.formatTime(timeStartInSec),
-            timeEnd: this.formatTime(timeEndInSec),
-            timeSpend: this.formatTime(this.state.timeSec)
+            name: this.state.textFieldValue,
+            timeStart: this.formatTimeFromSec(timeStartInSec),
+            timeEnd: this.formatTimeFromSec(timeEndInSec),
+            timeSpend: this.formatTimeFromSec(this.state.timeSec)
           }
         ]
       }));
@@ -135,8 +127,11 @@ class Main extends Component {
     }
   };
 
-  formatTime = (whatToChange) => {
-    const sec = whatToChange;
+  formatTimeToSec = (date) => {
+    return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+  };
+
+  formatTimeFromSec = (sec) => {
     const h = sec / 3600 ^ 0;
     const m = (sec - h * 3600) / 60 ^ 0;
     const s = sec - h * 3600 - m * 60;
@@ -145,7 +140,7 @@ class Main extends Component {
 
   render() {
     const {tasks, textFieldValue, openModal, btnValue} = this.state;
-    const timeSec = this.formatTime(this.state.timeSec);
+    const timeSec = this.formatTimeFromSec(this.state.timeSec);
     const actions = [
       <FlatButton
         label="CLOSE"

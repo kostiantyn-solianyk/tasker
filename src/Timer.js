@@ -17,6 +17,7 @@ const muiTheme = getMuiTheme({
 });
 
 export default class Timer extends Component {
+
   render() {
     const {btnValue, startTimer, endTimer, timeSec} = this.props;
 
@@ -26,8 +27,7 @@ export default class Timer extends Component {
           <Paper className={classes.paper}
                  zDepth={2}
                  circle={true}
-                 children={
-                   <p className={classes.paperChild}>{timeSec}</p>}/>
+                 children={<p className={classes.paperChild}>{timeSec}</p>}/>
         </MuiThemeProvider>
         {btnValue === "start" &&
         <MuiThemeProvider muiTheme={muiTheme}>
