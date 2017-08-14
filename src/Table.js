@@ -15,6 +15,7 @@ import {
 const textColor = '#3249c7';
 const classes = {
   tableWrapper: "tasker__table-wrapper",
+  tableBody: "tasker__tbody",
   btnMargin: "tasker__table-btn"
 };
 const muiTheme = getMuiTheme({
@@ -50,18 +51,19 @@ export default class TableData extends Component {
                 <TableHeaderColumn>Delete</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody displayRowCheckbox={false}>
+            <TableBody displayRowCheckbox={false} className={classes.tableBody}>
               {tasks.map((task, idx) =>
-                  <TableRow key={idx}>
-                    <TableRowColumn>{idx + 1}</TableRowColumn>
-                    <TableRowColumn>{task.name}</TableRowColumn>
-                    <TableRowColumn>{task.timeStart}</TableRowColumn>
-                    <TableRowColumn>{task.timeEnd}</TableRowColumn>
-                    <TableRowColumn>{task.timeSpend}</TableRowColumn>
-                    <TableRowColumn>
-                      <RaisedButton label="Delete" className={classes.btnMargin} onClick={() => {removeItem(task)}}/>
-                    </TableRowColumn>
-                  </TableRow>
+                <TableRow key={idx}>
+                  <TableRowColumn>{idx + 1}</TableRowColumn>
+                  <TableRowColumn>{task.name}</TableRowColumn>
+                  <TableRowColumn>{task.timeStart}</TableRowColumn>
+                  <TableRowColumn>{task.timeEnd}</TableRowColumn>
+                  <TableRowColumn>{task.timeSpend}</TableRowColumn>
+                  <TableRowColumn>
+                    <RaisedButton label="Delete" className={classes.btnMargin} onClick={() => {removeItem(task)
+                    }}/>
+                  </TableRowColumn>
+                </TableRow>
               )}
             </TableBody>
           </Table>

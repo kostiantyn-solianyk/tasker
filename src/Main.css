@@ -27,6 +27,10 @@
     text-align: center;
 }
 
+.tasker__tbody {
+    background-color: #e9f6ff;
+}
+
 .tasker__table-btn {
     margin: 18px auto;
 }
