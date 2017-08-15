@@ -34,3 +34,7 @@
 .tasker__table-btn {
     margin: 18px auto;
 }
+
+.tasker .recharts-responsive-container {
+    margin: 0 auto;
+}

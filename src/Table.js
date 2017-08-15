@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import RaisedButton from 'material-ui/RaisedButton';
 import {
   Table,
@@ -12,26 +11,16 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-const textColor = '#3249c7';
 const classes = {
   tableWrapper: "tasker__table-wrapper",
   tableBody: "tasker__tbody",
   btnMargin: "tasker__table-btn"
 };
-const muiTheme = getMuiTheme({
-  tableRow: {
-    textColor: textColor
-  },
-  raisedButton: {
-    textColor: textColor,
-    fontSize: 10
-  }
-});
 
 export default class TableData extends Component {
 
   render() {
-    const {removeItem, tasks} = this.props;
+    const {removeItem, tasks, muiTheme} = this.props;
 
     return (
       <div className={classes.tableWrapper}>

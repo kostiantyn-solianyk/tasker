@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import injectTapEventPlugin from "react-tap-event-plugin";
 import Timer from './Timer';
 import TableData from './Table';
+import Chart from './Chart';
 import './Main.css';
 injectTapEventPlugin();
 
@@ -21,8 +22,26 @@ const muiTheme = getMuiTheme({
     textColor: TextColor,
     hintColor: TextColor,
     focusColor: TextColor
+  },
+  tableRow: {
+    textColor: TextColor
+  },
+  raisedButton: {
+    textColor: TextColor,
+    fontSize: 12
   }
 });
+
+function formatTimeToSec(date) {
+  return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+}
+
+function formatTimeFromSec(sec) {
+  const h = sec / 3600 ^ 0;
+  const m = (sec - h * 3600) / 60 ^ 0;
+  const s = sec - h * 3600 - m * 60;
+  return ( h < 10 ? "0" + h : h ) + ':' + ( m < 10 ? "0" + m : m ) + ':' + ( s < 10 ? "0" + s : s );
+}
 
 class Main extends Component {
   constructor(props) {
@@ -72,10 +91,10 @@ class Main extends Component {
   };
 
   startTimer = () => {
-    this.setState(prevState => ({
-      btnValue: !prevState.btnValue,
+    this.setState({
+      btnValue: true,
       currentTimeStart: new Date()
-    }));
+    });
     this.timerId = setInterval(this.handleTick, 1000);
   };
 
@@ -83,11 +102,11 @@ class Main extends Component {
     const {textFieldValue, timeSec} = this.state;
 
     if (textFieldValue.length > 0) {
-      const timeStartInSec = this.formatTimeToSec(new Date(this.state.currentTimeStart));
-      const timeEndInSec = this.formatTimeToSec(new Date());
+      const timeStartInSec = formatTimeToSec(new Date(this.state.currentTimeStart));
+      const timeEndInSec = formatTimeToSec(new Date());
 
-      this.setState(prevState => ({
-        btnValue: !prevState.btnValue,
+      this.setState({
+        btnValue: false,
         timeSec: 0,
         currentTimeStart: '',
         textFieldValue: '',
@@ -95,27 +114,16 @@ class Main extends Component {
           ...this.state.tasks,
           {
             name: textFieldValue,
-            timeStart: this.formatTimeFromSec(timeStartInSec),
-            timeEnd: this.formatTimeFromSec(timeEndInSec),
-            timeSpend: this.formatTimeFromSec(timeSec)
+            timeStart: formatTimeFromSec(timeStartInSec),
+            timeEnd: formatTimeFromSec(timeEndInSec),
+            timeSpend: formatTimeFromSec(timeSec)
           }
         ]
-      }));
+      });
       clearInterval(this.timerId);
     } else {
       this.handleModalOpen();
     }
-  };
-
-  formatTimeToSec = (date) => {
-    return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
-  };
-
-  formatTimeFromSec = (sec) => {
-    const h = sec / 3600 ^ 0;
-    const m = (sec - h * 3600) / 60 ^ 0;
-    const s = sec - h * 3600 - m * 60;
-    return ( h < 10 ? "0" + h : h ) + ':' + ( m < 10 ? "0" + m : m ) + ':' + ( s < 10 ? "0" + s : s );
   };
 
   removeItem = (removableTask) => {
@@ -133,43 +141,43 @@ class Main extends Component {
 
   render() {
     const {tasks, textFieldValue, openModal, btnValue} = this.state;
-    const timeSec = this.formatTimeFromSec(this.state.timeSec);
+    const timeSec = formatTimeFromSec(this.state.timeSec);
     const actions = [
       <FlatButton
         label="CLOSE"
         primary={true}
-        onTouchTap={this.handleModalClose}/>
+        onClick={this.handleModalClose}/>
     ];
 
     return (
       <div className={classes.main}>
         <MuiThemeProvider muiTheme={muiTheme}>
-          <TextField
-            hintText="Start typing..."
-            floatingLabelText="Name of your task"
-            className={classes.textField}
-            value={textFieldValue}
-            onChange={this.handleTextFieldChange}
-            ref="textField"/>
-        </MuiThemeProvider>
-
-        <MuiThemeProvider muiTheme={muiTheme}>
-          <Dialog
-            title="Empty task name"
-            titleStyle={{color: "#bf2a5c"}}
-            actions={actions}
-            modal={true}
-            open={openModal}>
-            You are trying close your task without name, enter the title and try again!
-          </Dialog>
+          <div>
+            <TextField
+              hintText="Start typing..."
+              floatingLabelText="Name of your task"
+              className={classes.textField}
+              value={textFieldValue}
+              onChange={this.handleTextFieldChange}
+              ref="textField"/>
+            <Dialog
+              title="Empty task name"
+              titleStyle={{color: "#bf2a5c"}}
+              actions={actions}
+              modal={true}
+              open={openModal}>
+              You are trying close your task without name, enter the title and try again!
+            </Dialog>
+          </div>
         </MuiThemeProvider>
 
         <Timer timeSec={timeSec}
                startTimer={this.startTimer}
                endTimer={this.endTimer}
-               btnValue={btnValue ? 'stop' : 'start'}/>
-
-        <TableData tasks={tasks} removeItem={this.removeItem}/>
+               btnValue={btnValue ? 'stop' : 'start'}
+               muiTheme={muiTheme}/>
+        <TableData tasks={tasks} removeItem={this.removeItem} muiTheme={muiTheme}/>
+        <Chart tasks={tasks}/>
       </div>
     );
   }
