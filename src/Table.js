@@ -30,10 +30,6 @@ const muiTheme = getMuiTheme({
 
 export default class TableData extends Component {
 
-  componentWillReceiveProps = (nextProps) => {
-    localStorage.setItem("tasks", JSON.stringify(nextProps.tasks));
-  };
-
   render() {
     const {removeItem, tasks} = this.props;
 

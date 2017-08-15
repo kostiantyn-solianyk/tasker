@@ -27,13 +27,16 @@ const muiTheme = getMuiTheme({
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    const defaultState = {
       btnValue: false,
       timeSec: 0,
+      currentTimeStart: '',
       textFieldValue: '',
       openModal: false,
-      tasks: JSON.parse(localStorage.getItem("tasks")) || []
+      tasks: []
     };
+    const stateFromLS = localStorage.getItem("state");
+    this.state = stateFromLS ? JSON.parse(stateFromLS) : defaultState;
   }
 
   handleModalOpen = () => {
@@ -51,79 +54,54 @@ class Main extends Component {
     });
   };
 
-  // componentWillUpdate = () => {
-  //   clearInterval(this.timer);
-  // };
-
-  componentDidUpdate = () => {
-    if (this.state.btnValue) {
-      const currentTime = new Date();
-
-      setTimeout(() => {
-        this.setState({
-          timeSec: +((currentTime - this.currentTimeStart) / 1000).toFixed(0)
-        });
-      }, 1000);
-    }
-  };
-
-  componentWillMount = () => {
-    const timeStartFromStorage = Date.parse(localStorage.timeStart);
-
-    if (timeStartFromStorage) {
-      const currentTimer = new Date();
-      this.setState({
-        timeSec: +((currentTimer - timeStartFromStorage) / 1000).toFixed(0)
-      });
-      this.startTimer();
-      this.forceUpdate();
-    }
-  };
-
-  removeItem = (removableTask) => {
-    const {tasks} = this.state;
-    const filteredTasks = tasks.filter(task => {
-      if (removableTask !== task) {
-        return [...tasks];
-      }
-    });
-
+  handleTick = () => {
+    const currentTime = new Date();
     this.setState({
-      tasks: filteredTasks
+      timeSec: Math.floor((currentTime - new Date(this.state.currentTimeStart)) / 1000)
     });
+  };
+
+  componentWillUpdate = (nextProps, nextState) => {
+    localStorage.setItem("state", JSON.stringify(nextState));
+  };
+
+  componentDidMount = () => {
+    if (this.state.currentTimeStart) {
+      this.timerId = setInterval(this.handleTick, 1000);
+    }
   };
 
   startTimer = () => {
-    this.currentTimeStart = new Date(localStorage.getItem("timeStart") || new Date());
-    localStorage.setItem("timeStart", this.currentTimeStart);
-
-    if (this.state.timeSec === 0 || this.state.textFieldValue.length > 0) {
-      this.setState(prevState => ({
-        btnValue: !prevState.btnValue
-      }));
-    }
+    this.setState(prevState => ({
+      btnValue: !prevState.btnValue,
+      currentTimeStart: new Date()
+    }));
+    this.timerId = setInterval(this.handleTick, 1000);
   };
 
   endTimer = () => {
-    if (this.state.textFieldValue.length > 0) {
-      const timeStartInSec = this.formatTimeToSec(this.currentTimeStart);
+    const {textFieldValue, timeSec} = this.state;
+
+    if (textFieldValue.length > 0) {
+      const timeStartInSec = this.formatTimeToSec(new Date(this.state.currentTimeStart));
       const timeEndInSec = this.formatTimeToSec(new Date());
 
       this.setState(prevState => ({
         btnValue: !prevState.btnValue,
         timeSec: 0,
-        textFieldValue: "",
+        currentTimeStart: '',
+        textFieldValue: '',
         tasks: [
           ...this.state.tasks,
           {
-            name: this.state.textFieldValue,
+            name: textFieldValue,
             timeStart: this.formatTimeFromSec(timeStartInSec),
             timeEnd: this.formatTimeFromSec(timeEndInSec),
-            timeSpend: this.formatTimeFromSec(this.state.timeSec)
+            timeSpend: this.formatTimeFromSec(timeSec)
           }
         ]
       }));
-      localStorage.removeItem("timeStart");
+      clearInterval(this.timerId);
     } else {
       this.handleModalOpen();
     }
@@ -138,6 +116,19 @@ class Main extends Component {
     const m = (sec - h * 3600) / 60 ^ 0;
     const s = sec - h * 3600 - m * 60;
     return ( h < 10 ? "0" + h : h ) + ':' + ( m < 10 ? "0" + m : m ) + ':' + ( s < 10 ? "0" + s : s );
+  };
+
+  removeItem = (removableTask) => {
+    const {tasks} = this.state;
+    const filteredTasks = tasks.filter(task => {
+      if (removableTask !== task) {
+        return [...tasks];
+      }
+    });
+
+    this.setState({
+      tasks: filteredTasks
+    });
   };
 
   render() {
