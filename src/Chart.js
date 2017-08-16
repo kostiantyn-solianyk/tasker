@@ -15,11 +15,11 @@ export default class Chart extends Component {
 
   generateTimes(length, callback) {
     for (let i = 0; i < length; i++) {
-      callback(i);
+      callback(i)
     }
   }
 
-  generateChart() {
+  generateCharts() {
     const {tasks} = this.props;
     const charts = [];
 
@@ -30,28 +30,32 @@ export default class Chart extends Component {
       }
     });
 
-    tasks.map(item => {
-      const timeStart = new Date(item.timeStartInDateFormat);
-      const timeEnd = new Date(item.timeEndInDateFormat);
-      const timeStartInHour = timeStart.getHours();
-      const diffInMinutes = (timeEnd - timeStart) / 1000 / 60;
+    tasks.map(task => {
+      const timeStart = new Date(task.timeStartInDateFormat);
+      const timeEnd = new Date(task.timeEndInDateFormat);
 
-      if (diffInMinutes > 60) {
-        const currentValue = 60 - timeStart.getMinutes();
-        charts[timeStartInHour].value += currentValue;
-        let newDiff = diffInMinutes - currentValue;
-        let nextStep = timeStartInHour + 1;
+      if (timeStart.getDate() === new Date().getDate()) {
+        const timeStartInHour = timeStart.getHours();
+        const diffInMinutes = (timeEnd - timeStart) / 1000 / 60;
 
-        while (newDiff >= 60) {
-          charts[nextStep].value += newDiff >= 60 ? 60 : newDiff;
-          newDiff = newDiff - 60;
-          nextStep++;
+        if (diffInMinutes > 60) {
+          const currentValue = 60 - timeStart.getMinutes();
+          charts[timeStartInHour].value += currentValue;
+          let newDiff = diffInMinutes - currentValue;
+          let newStep = timeStartInHour + 1;
+
+          while (newDiff >= 60) {
+            charts[newStep].value += newDiff >= 60 ? 60 : newDiff;
+            newDiff = newDiff - 60;
+            newStep++;
+          }
+
+          if (newDiff < 60) {
+            charts[newStep].value += newDiff;
+          }
+        } else {
+          charts[timeStartInHour].value += diffInMinutes;
         }
-        if (newDiff < 60) {
-          charts[nextStep].value += newDiff;
-        }
-      } else {
-        charts[timeStartInHour].value += diffInMinutes;
       }
     });
 
@@ -59,7 +63,7 @@ export default class Chart extends Component {
   }
 
   render() {
-    const charts = this.generateChart();
+    const charts = this.generateCharts();
 
     return (
       <ResponsiveContainer width='75%' aspect={4.0}>
