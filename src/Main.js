@@ -115,8 +115,10 @@ class Main extends Component {
           {
             name: textFieldValue,
             timeStart: formatTimeFromSec(timeStartInSec),
+            timeStartInDateFormat: new Date(this.state.currentTimeStart),
             timeEnd: formatTimeFromSec(timeEndInSec),
-            timeSpend: formatTimeFromSec(timeSec)
+            timeEndInDateFormat: new Date(),
+            timeSpend: formatTimeFromSec(timeSec),
           }
         ]
       });
