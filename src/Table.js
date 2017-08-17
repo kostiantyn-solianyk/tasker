@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -8,18 +8,18 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from 'material-ui/Table';
 
 const classes = {
-  tableWrapper: "tasker__table-wrapper",
-  tableBody: "tasker__tbody",
-  btnMargin: "tasker__table-btn"
+  tableWrapper: 'tasker__table-wrapper',
+  tableBody: 'tasker__tbody',
+  btnMargin: 'tasker__table-btn'
 };
 
 export default class TableData extends Component {
 
-  render() {
+  render () {
     const {removeItem, tasks, muiTheme} = this.props;
 
     return (
@@ -45,8 +45,9 @@ export default class TableData extends Component {
                   <TableRowColumn>{task.timeEnd}</TableRowColumn>
                   <TableRowColumn>{task.timeSpend}</TableRowColumn>
                   <TableRowColumn>
-                    <RaisedButton label="Delete" className={classes.btnMargin} onClick={() => {removeItem(task)
-                    }}/>
+                    <RaisedButton label='Delete' className={classes.btnMargin} onClick={() => {
+                      removeItem(task);
+                    }} />
                   </TableRowColumn>
                 </TableRow>
               )}
@@ -54,9 +55,10 @@ export default class TableData extends Component {
           </Table>
         </MuiThemeProvider>
       </div>
-    )
-  }
-}
+    );
+  };
+
+};
 
 TableData.propTypes = {
   tasks: PropTypes.array,

@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import injectTapEventPlugin from "react-tap-event-plugin";
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import Timer from './Timer';
 import TableData from './Table';
 import Chart from './Chart';
@@ -13,9 +13,9 @@ injectTapEventPlugin();
 
 const TextColor = '#3249c7';
 const classes = {
-  main: "tasker",
-  textField: "tasker__text-field",
-  btnStart: "tasker__timer-button"
+  main: 'tasker',
+  textField: 'tasker__text-field',
+  btnStart: 'tasker__timer-button'
 };
 const muiTheme = getMuiTheme({
   textField: {
@@ -32,19 +32,20 @@ const muiTheme = getMuiTheme({
   }
 });
 
-function formatTimeToSec(date) {
+function formatTimeToSec (date) {
   return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
 }
 
-function formatTimeFromSec(sec) {
+function formatTimeFromSec (sec) {
   const h = sec / 3600 ^ 0;
   const m = (sec - h * 3600) / 60 ^ 0;
   const s = sec - h * 3600 - m * 60;
-  return ( h < 10 ? "0" + h : h ) + ':' + ( m < 10 ? "0" + m : m ) + ':' + ( s < 10 ? "0" + s : s );
+  return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
 }
 
 class Main extends Component {
-  constructor(props) {
+
+  constructor (props) {
     super(props);
     const defaultState = {
       btnValue: false,
@@ -54,7 +55,7 @@ class Main extends Component {
       openModal: false,
       tasks: []
     };
-    const stateFromLS = localStorage.getItem("state");
+    const stateFromLS = localStorage.getItem('state');
     this.state = stateFromLS ? JSON.parse(stateFromLS) : defaultState;
   }
 
@@ -81,7 +82,7 @@ class Main extends Component {
   };
 
   componentWillUpdate = (nextProps, nextState) => {
-    localStorage.setItem("state", JSON.stringify(nextState));
+    localStorage.setItem('state', JSON.stringify(nextState));
   };
 
   componentDidMount = () => {
@@ -118,7 +119,7 @@ class Main extends Component {
             timeStartInDateFormat: new Date(this.state.currentTimeStart),
             timeEnd: formatTimeFromSec(timeEndInSec),
             timeEndInDateFormat: new Date(),
-            timeSpend: formatTimeFromSec(timeSec),
+            timeSpend: formatTimeFromSec(timeSec)
           }
         ]
       });
@@ -141,14 +142,14 @@ class Main extends Component {
     });
   };
 
-  render() {
+  render () {
     const {tasks, textFieldValue, openModal, btnValue} = this.state;
     const timeSec = formatTimeFromSec(this.state.timeSec);
     const actions = [
       <FlatButton
-        label="CLOSE"
-        primary={true}
-        onClick={this.handleModalClose}/>
+        label='CLOSE'
+        primary
+        onClick={this.handleModalClose} />
     ];
 
     return (
@@ -156,33 +157,35 @@ class Main extends Component {
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
             <TextField
-              hintText="Start typing..."
-              floatingLabelText="Name of your task"
+              hintText='Start typing...'
+              floatingLabelText='Name of your task'
               className={classes.textField}
               value={textFieldValue}
               onChange={this.handleTextFieldChange}
-              ref="textField"/>
+              ref='textField' />
             <Dialog
-              title="Empty task name"
-              titleStyle={{color: "#bf2a5c"}}
+              title='Empty task name'
+              titleStyle={{color: '#bf2a5c'}}
               actions={actions}
-              modal={true}
+              modal
               open={openModal}>
               You are trying close your task without name, enter the title and try again!
             </Dialog>
           </div>
         </MuiThemeProvider>
 
-        <Timer timeSec={timeSec}
-               startTimer={this.startTimer}
-               endTimer={this.endTimer}
-               btnValue={btnValue ? 'stop' : 'start'}
-               muiTheme={muiTheme}/>
-        <TableData tasks={tasks} removeItem={this.removeItem} muiTheme={muiTheme}/>
-        <Chart tasks={tasks}/>
+        <Timer
+          timeSec={timeSec}
+          startTimer={this.startTimer}
+          endTimer={this.endTimer}
+          btnValue={btnValue ? 'stop' : 'start'}
+          muiTheme={muiTheme} />
+        <TableData tasks={tasks} removeItem={this.removeItem} muiTheme={muiTheme} />
+        <Chart tasks={tasks} />
       </div>
     );
-  }
+  };
+
 }
 
 export default Main;

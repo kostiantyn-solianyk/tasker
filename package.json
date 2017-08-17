@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel-eslint": "^7.2.3",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -13,6 +14,18 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "standard --verbose | snazzy"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "material-ui": "~0.15.0-0",
+    "eslint": "^4.4.1",
+    "eslint-plugin-react": "^7.2.1",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.3"
   }
 }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   ComposedChart,
@@ -13,13 +13,13 @@ import {
 
 export default class Chart extends Component {
 
-  generateTimes(length, callback) {
+  generateTimes (length, callback) {
     for (let i = 0; i < length; i++) {
-      callback(i)
+      callback(i);
     }
   }
 
-  generateCharts() {
+  generateCharts () {
     const {tasks} = this.props;
     const charts = [];
 
@@ -27,7 +27,7 @@ export default class Chart extends Component {
       charts[i] = {
         hour: i,
         value: 0
-      }
+      };
     });
 
     tasks.map(task => {
@@ -60,25 +60,26 @@ export default class Chart extends Component {
     });
 
     return charts;
-  }
+  };
 
-  render() {
+  render () {
     const charts = this.generateCharts();
 
     return (
       <ResponsiveContainer width='75%' aspect={4.0}>
         <ComposedChart data={charts}>
-          <XAxis dataKey="hour"/>
-          <YAxis type="number" domain={[0, 60]}/>
-          <Tooltip/>
-          <Legend/>
-          <CartesianGrid stroke='#f5f5f5'/>
-          <Bar dataKey="value" name="Time" barSize={20} fill='#3249c7'/>
+          <XAxis dataKey='hour' />
+          <YAxis type='number' domain={[0, 60]} />
+          <Tooltip />
+          <Legend />
+          <CartesianGrid stroke='#f5f5f5' />
+          <Bar dataKey='value' name='Time' barSize={20} fill='#3249c7' />
         </ComposedChart>
       </ResponsiveContainer>
     );
-  }
-}
+  };
+
+};
 
 Chart.propTypes = {
   tasks: PropTypes.array
