@@ -21,7 +21,7 @@ export default class TaskInfo extends Component {
           <RaisedButton label='Go back' onClick={() => goBack()} />
         </MuiThemeProvider>
         <div className={classes.taskInfo}>
-          <h3>Name of tasks: {task.name}</h3>
+          <h3>Name of task: {task.name}</h3>
           <p className={classes.taskAdditional}>Time start: {task.timeStart}</p>
           <p className={classes.taskAdditional}>Time end: {task.timeEnd}</p>
           <p className={classes.taskAdditional}>Time spend: {task.timeSpend}</p>
