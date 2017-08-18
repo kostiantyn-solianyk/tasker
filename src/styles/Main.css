@@ -38,3 +38,12 @@
 .tasker .recharts-responsive-container {
     margin: 0 auto;
 }
+
+.tasker__info {
+    text-align: center;
+    color: #3249c7;
+}
+
+.tasker__additional {
+    padding: 5px;
+}

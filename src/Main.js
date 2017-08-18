@@ -1,36 +1,21 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import Timer from './Timer';
 import TableData from './Table';
 import Chart from './Chart';
-import './Main.css';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import muiTheme from './styles/StylesForMui';
+import './styles/Main.css';
 injectTapEventPlugin();
 
-const TextColor = '#3249c7';
 const classes = {
   main: 'tasker',
   textField: 'tasker__text-field',
   btnStart: 'tasker__timer-button'
 };
-const muiTheme = getMuiTheme({
-  textField: {
-    textColor: TextColor,
-    hintColor: TextColor,
-    focusColor: TextColor
-  },
-  tableRow: {
-    textColor: TextColor
-  },
-  raisedButton: {
-    textColor: TextColor,
-    fontSize: 12
-  }
-});
 
 function formatTimeToSec (date) {
   return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();

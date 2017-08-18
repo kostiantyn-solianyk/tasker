@@ -23,7 +23,6 @@ export default class Timer extends Component {
               zDepth={2}
               circle
               children={<p className={classes.paperChild}>{timeSec}</p>} />
-
             {btnValue === 'start' &&
             <RaisedButton label={btnValue} onClick={() => startTimer()} />
             }

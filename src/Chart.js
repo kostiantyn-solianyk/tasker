@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  ComposedChart,
-  ResponsiveContainer,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from 'recharts';
+import { ComposedChart, ResponsiveContainer, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 export default class Chart extends Component {
 
@@ -70,10 +61,10 @@ export default class Chart extends Component {
         <ComposedChart data={charts}>
           <XAxis dataKey='hour' />
           <YAxis type='number' domain={[0, 60]} />
-          <Tooltip />
+          <Tooltip separator=': ' />
           <Legend />
           <CartesianGrid stroke='#f5f5f5' />
-          <Bar dataKey='value' name='Time' barSize={20} fill='#3249c7' />
+          <Bar dataKey='value' name='Minutes in this hours' barSize={20} fill='#3249c7' />
         </ComposedChart>
       </ResponsiveContainer>
     );
