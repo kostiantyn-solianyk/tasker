@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Route } from 'react-router';
-import Main from './Main';
-import TaskInfo from './TaskInfo';
+import Main from './components/Main';
+import TaskInfo from './components/TaskInfo';
 
 const Routes = (props) => (
   <Router {...props}>

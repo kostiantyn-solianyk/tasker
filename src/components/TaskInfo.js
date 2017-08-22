@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
-import muiTheme from './styles/StylesForMui';
+import muiTheme from '../styles/StylesForMui';
 
 const classes = {
   taskInfo: 'tasker__info',

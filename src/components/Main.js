@@ -7,8 +7,17 @@ import Timer from './Timer';
 import TableData from './Table';
 import Chart from './Chart';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import muiTheme from './styles/StylesForMui';
-import './styles/Main.css';
+import muiTheme from '../styles/StylesForMui';
+import '../styles/Main.css';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {
+  startTimer,
+  handleModalOpen,
+  handleModalClose,
+  endTimer,
+  removeItem
+} from '../actions/actions';
 injectTapEventPlugin();
 
 const classes = {
@@ -32,24 +41,28 @@ class Main extends Component {
 
   constructor (props) {
     super(props);
-    const defaultState = {
-      btnValue: false,
+    this.state = {
       timeSec: 0,
-      currentTimeStart: '',
-      textFieldValue: '',
-      openModal: false,
-      tasks: []
+      textFieldValue: ''
     };
-    const stateFromLS = localStorage.getItem('state');
-    this.state = stateFromLS ? JSON.parse(stateFromLS) : defaultState;
   }
 
   handleModalOpen = () => {
-    this.setState({openModal: true});
+    const props = this.props.initial;
+
+    this.props.handleModalOpen({
+      ...props,
+      openModal: true
+    });
   };
 
   handleModalClose = () => {
-    this.setState({openModal: false});
+    const props = this.props.initial;
+
+    this.props.handleModalClose({
+      ...props,
+      openModal: false
+    });
     this.refs.textField.focus();
   };
 
@@ -60,24 +73,35 @@ class Main extends Component {
   };
 
   handleTick = () => {
+    const props = this.props.initial;
     const currentTime = new Date();
+
     this.setState({
-      timeSec: Math.floor((currentTime - new Date(this.state.currentTimeStart)) / 1000)
+      timeSec: Math.floor((currentTime - new Date(props.currentTimeStart)) / 1000)
     });
   };
 
-  componentWillUpdate = (nextProps, nextState) => {
-    localStorage.setItem('state', JSON.stringify(nextState));
+  componentDidUpdate = () => {
+    localStorage.setItem('state', JSON.stringify(this.props.initial));
   };
 
   componentDidMount = () => {
-    if (this.state.currentTimeStart) {
+    const props = this.props.initial;
+
+    if (props.currentTimeStart) {
       this.timerId = setInterval(this.handleTick, 1000);
     }
   };
 
+  componentWillUnmount = () => {
+    clearInterval(this.timerId);
+  };
+
   startTimer = () => {
-    this.setState({
+    const props = this.props.initial;
+
+    this.props.startTimer({
+      ...props,
       btnValue: true,
       currentTimeStart: new Date()
     });
@@ -85,28 +109,33 @@ class Main extends Component {
   };
 
   endTimer = () => {
-    const {textFieldValue, timeSec} = this.state;
+    const { timeSec, textFieldValue } = this.state;
+    const props = this.props.initial;
 
     if (textFieldValue.length > 0) {
-      const timeStartInSec = formatTimeToSec(new Date(this.state.currentTimeStart));
+      const timeStartInSec = formatTimeToSec(new Date(props.currentTimeStart));
       const timeEndInSec = formatTimeToSec(new Date());
 
-      this.setState({
+      this.props.endTimer({
+        ...props,
         btnValue: false,
-        timeSec: 0,
         currentTimeStart: '',
-        textFieldValue: '',
         tasks: [
-          ...this.state.tasks,
+          ...props.tasks,
           {
             name: textFieldValue,
             timeStart: formatTimeFromSec(timeStartInSec),
-            timeStartInDateFormat: new Date(this.state.currentTimeStart),
+            timeStartInDateFormat: new Date(props.currentTimeStart),
             timeEnd: formatTimeFromSec(timeEndInSec),
             timeEndInDateFormat: new Date(),
             timeSpend: formatTimeFromSec(timeSec)
           }
         ]
+      });
+
+      this.setState({
+        timeSec: 0,
+        textFieldValue: ''
       });
       clearInterval(this.timerId);
     } else {
@@ -115,20 +144,23 @@ class Main extends Component {
   };
 
   removeItem = (removableTask) => {
-    const {tasks} = this.state;
+    const props = this.props.initial;
+    const {tasks} = props;
     const filteredTasks = tasks.filter(task => {
       if (removableTask !== task) {
         return [...tasks];
       }
     });
 
-    this.setState({
+    this.props.removeItem({
+      ...props,
       tasks: filteredTasks
     });
   };
 
   render () {
-    const {tasks, textFieldValue, openModal, btnValue} = this.state;
+    const { textFieldValue } = this.state;
+    const { tasks, openModal, btnValue } = this.props.initial;
     const timeSec = formatTimeFromSec(this.state.timeSec);
     const actions = [
       <FlatButton
@@ -173,4 +205,20 @@ class Main extends Component {
 
 }
 
-export default Main;
+function mapStateToProps (state) {
+  return {
+    initial: state.initial
+  };
+}
+
+function matchDispatchToProps (dispatch) {
+  return bindActionCreators({
+    startTimer: startTimer,
+    handleModalOpen: handleModalOpen,
+    handleModalClose: handleModalClose,
+    endTimer: endTimer,
+    removeItem: removeItem
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(Main);

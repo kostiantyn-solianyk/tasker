@@ -48,6 +48,7 @@ export default class Chart extends Component {
           charts[timeStartInHour].value += diffInMinutes;
         }
       }
+      return task;
     });
 
     return charts;
