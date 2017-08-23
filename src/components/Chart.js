@@ -27,6 +27,7 @@ export default class Chart extends Component {
 
       if (timeStart.getDate() === new Date().getDate()) {
         const timeStartInHour = timeStart.getHours();
+        const timeEndInHour = timeEnd.getHours();
         const diffInMinutes = (timeEnd - timeStart) / 1000 / 60;
 
         if (diffInMinutes > 60) {
@@ -44,8 +45,12 @@ export default class Chart extends Component {
           if (newDiff < 60) {
             charts[newStep].value += newDiff;
           }
-        } else {
+        } else if (diffInMinutes < 60 && timeStartInHour === timeEndInHour) {
           charts[timeStartInHour].value += diffInMinutes;
+        } else {
+          const currentValue = 60 - timeStart.getMinutes();
+          charts[timeStartInHour].value += currentValue;
+          charts[timeStartInHour + 1].value += diffInMinutes - currentValue;
         }
       }
       return task;

@@ -12,11 +12,11 @@ import '../styles/Main.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  startTimer,
-  handleModalOpen,
-  handleModalClose,
-  endTimer,
-  removeItem
+  actionStartTimer,
+  actionHandleModalOpen,
+  actionHandleModalClose,
+  actionEndTimer,
+  actionRemoveItem
 } from '../actions/actions';
 injectTapEventPlugin();
 
@@ -50,7 +50,7 @@ class Main extends Component {
   handleModalOpen = () => {
     const props = this.props.initial;
 
-    this.props.handleModalOpen({
+    this.props.actionHandleModalOpen({
       ...props,
       openModal: true
     });
@@ -59,7 +59,7 @@ class Main extends Component {
   handleModalClose = () => {
     const props = this.props.initial;
 
-    this.props.handleModalClose({
+    this.props.actionHandleModalClose({
       ...props,
       openModal: false
     });
@@ -100,7 +100,7 @@ class Main extends Component {
   startTimer = () => {
     const props = this.props.initial;
 
-    this.props.startTimer({
+    this.props.actionStartTimer({
       ...props,
       btnValue: true,
       currentTimeStart: new Date()
@@ -116,7 +116,7 @@ class Main extends Component {
       const timeStartInSec = formatTimeToSec(new Date(props.currentTimeStart));
       const timeEndInSec = formatTimeToSec(new Date());
 
-      this.props.endTimer({
+      this.props.actionEndTimer({
         ...props,
         btnValue: false,
         currentTimeStart: '',
@@ -147,12 +147,10 @@ class Main extends Component {
     const props = this.props.initial;
     const {tasks} = props;
     const filteredTasks = tasks.filter(task => {
-      if (removableTask !== task) {
-        return [...tasks];
-      }
+      return (removableTask !== task) ? [...tasks] : false;
     });
 
-    this.props.removeItem({
+    this.props.actionRemoveItem({
       ...props,
       tasks: filteredTasks
     });
@@ -213,11 +211,11 @@ function mapStateToProps (state) {
 
 function matchDispatchToProps (dispatch) {
   return bindActionCreators({
-    startTimer: startTimer,
-    handleModalOpen: handleModalOpen,
-    handleModalClose: handleModalClose,
-    endTimer: endTimer,
-    removeItem: removeItem
+    actionStartTimer: actionStartTimer,
+    actionHandleModalOpen: actionHandleModalOpen,
+    actionHandleModalClose: actionHandleModalClose,
+    actionEndTimer: actionEndTimer,
+    actionRemoveItem: actionRemoveItem
   }, dispatch);
 }
 
