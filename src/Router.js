@@ -3,6 +3,7 @@ import { Router, Route } from 'react-router';
 import Main from './components/Main';
 import TaskInfo from './components/TaskInfo';
 
+// update
 const Routes = (props) => (
   <Router {...props}>
     <Route path='/' component={Main} />
